@@ -112,8 +112,8 @@ function App() {
             </h2>
             <p className="text-gray-600 leading-relaxed">
               Informe seu e-mail corporativo, descreva rapidamente o problema no campo{" "}
-              <strong>Summary</strong>, forneça detalhes completos no campo{" "}
-              <strong>Description</strong>, inclua dados de usuário/máquina e relate passos já
+              <strong>Resumo</strong>, forneça detalhes completos no campo{" "}
+              <strong>Descrição</strong>, inclua dados de usuário/máquina e relate passos já
               realizados. Quanto mais completo o chamado, mais rápido conseguimos ajudar.
             </p>
           </div>
@@ -252,7 +252,7 @@ function App() {
 
             <div>
               <label htmlFor="summary" className="block text-sm font-medium text-gray-700 mb-2">
-                Summary (required)
+                Resumo (obrigatório)
               </label>
               <input
                 id="summary"
@@ -267,7 +267,7 @@ function App() {
 
             <div>
               <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-                Description (required)
+                Descrição (obrigatório)
               </label>
               <textarea
                 id="description"
@@ -281,7 +281,7 @@ function App() {
             </div>
 
             <div>
-              <span className="block text-sm font-medium text-gray-700 mb-2">Attach a file (opcional)</span>
+              <span className="block text-sm font-medium text-gray-700 mb-2">Anexe um arquivo (opicional)</span>
               <label
                 htmlFor="attachment"
                 className="flex items-center justify-center w-full border-2 border-dashed border-gray-300 rounded-lg px-4 py-6 text-gray-500 cursor-pointer hover:border-blue-400 hover:text-blue-500 transition"
