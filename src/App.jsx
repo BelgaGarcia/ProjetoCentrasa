@@ -75,11 +75,65 @@ function App() {
   const [computerId, setComputerId] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [userName, setUserName] = useState("");
-  const [problemType, setProblemType] = useState("informatica");
+  const [problemType, setProblemType] = useState("");
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [subcategory, setSubcategory] = useState("");
+  const [equipmentTag, setEquipmentTag] = useState("");
+
+  const clearDependentFields = (field) => {
+    switch (field) {
+      case "requesterEmail":
+        setComputerId("");
+        clearDependentFields("computerId");
+        break;
+      case "computerId":
+        setEmployeeId("");
+        clearDependentFields("employeeId");
+        break;
+      case "employeeId":
+        setUserName("");
+        clearDependentFields("userName");
+        break;
+      case "userName":
+        setProblemType("");
+        clearDependentFields("problemType");
+        break;
+      case "problemType":
+        setCategory("");
+        clearDependentFields("category");
+        break;
+      case "category":
+        setSubcategory("");
+        clearDependentFields("subcategory");
+        break;
+      case "subcategory":
+        setEquipmentTag("");
+        clearDependentFields("equipmentTag");
+        break;
+      case "equipmentTag":
+        setSummary("");
+        clearDependentFields("summary");
+        break;
+      case "summary":
+        setDescription("");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const requiresEquipmentTag = category === "desktop" || category === "impressora";
+  const isComputerIdDisabled = !requesterEmail;
+  const isEmployeeIdDisabled = !computerId;
+  const isUserNameDisabled = !employeeId;
+  const isProblemTypeDisabled = !userName;
+  const isCategoryDisabled = !problemType;
+  const isSubcategoryDisabled = !category;
+  const isEquipmentTagDisabled = requiresEquipmentTag ? !subcategory : false;
+  const isSummaryDisabled = requiresEquipmentTag ? !equipmentTag : !subcategory;
+  const isDescriptionDisabled = !summary;
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -93,6 +147,7 @@ function App() {
       description,
       category,
       subcategory,
+      equipmentTag,
     });
   };
 
@@ -129,7 +184,13 @@ function App() {
                   type="email"
                   required
                   value={requesterEmail}
-                  onChange={(event) => setRequesterEmail(event.target.value)}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setRequesterEmail(value);
+                    if (!value) {
+                      clearDependentFields("requesterEmail");
+                    }
+                  }}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                   placeholder="nome.sobrenome@empresa.com"
                 />
@@ -144,7 +205,14 @@ function App() {
                   type="text"
                   required
                   value={computerId}
-                  onChange={(event) => setComputerId(event.target.value)}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setComputerId(value);
+                    if (!value) {
+                      clearDependentFields("computerId");
+                    }
+                  }}
+                  disabled={isComputerIdDisabled}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                   placeholder="Hostname, patrimônio ou inventário"
                 />
@@ -159,7 +227,14 @@ function App() {
                   type="text"
                   required
                   value={employeeId}
-                  onChange={(event) => setEmployeeId(event.target.value)}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setEmployeeId(value);
+                    if (!value) {
+                      clearDependentFields("employeeId");
+                    }
+                  }}
+                  disabled={isEmployeeIdDisabled}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                   placeholder="Ex.: 123456"
                 />
@@ -174,7 +249,14 @@ function App() {
                   type="text"
                   required
                   value={userName}
-                  onChange={(event) => setUserName(event.target.value)}
+                  onChange={(event) => {
+                    const value = event.target.value;
+                    setUserName(value);
+                    if (!value) {
+                      clearDependentFields("userName");
+                    }
+                  }}
+                  disabled={isUserNameDisabled}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                   placeholder="Nome e sobrenome"
                 />
@@ -189,9 +271,19 @@ function App() {
                 id="problemType"
                 required
                 value={problemType}
-                onChange={(event) => setProblemType(event.target.value)}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setProblemType(value);
+                  if (value !== problemType) {
+                    clearDependentFields("problemType");
+                  }
+                }}
+                disabled={isProblemTypeDisabled}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
               >
+                <option value="" disabled>
+                  Selecione o tipo de problema
+                </option>
                 <option value="informatica">Informática</option>
                 <option value="infraestrutura">Infraestrutura</option>
               </select>
@@ -207,9 +299,13 @@ function App() {
                   required
                   value={category}
                   onChange={(event) => {
-                    setCategory(event.target.value);
-                    setSubcategory("");
+                    const value = event.target.value;
+                    setCategory(value);
+                    if (value !== category) {
+                      clearDependentFields("category");
+                    }
                   }}
+                  disabled={isCategoryDisabled}
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 >
                   <option value="" disabled>
@@ -232,7 +328,14 @@ function App() {
                     id="subcategory"
                     required
                     value={subcategory}
-                    onChange={(event) => setSubcategory(event.target.value)}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setSubcategory(value);
+                      if (value !== subcategory) {
+                        clearDependentFields("subcategory");
+                      }
+                    }}
+                    disabled={isSubcategoryDisabled}
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                   >
                     <option value="" disabled>
@@ -248,6 +351,35 @@ function App() {
                   </select>
                 </div>
               )}
+              {requiresEquipmentTag && (
+                <div>
+                  <label htmlFor="equipmentTag" className="block text-sm font-medium text-gray-700 mb-2">
+                    {category === "desktop"
+                      ? "TAG do computador do chamado (obrigatório)"
+                      : "TAG da impressora do chamado (obrigatório)"}
+                  </label>
+                  <input
+                    id="equipmentTag"
+                    type="text"
+                    required
+                    value={equipmentTag}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setEquipmentTag(value);
+                      if (!value) {
+                        clearDependentFields("equipmentTag");
+                      }
+                    }}
+                    disabled={isEquipmentTagDisabled}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder={
+                      category === "desktop"
+                        ? "Informe a TAG/hostname do computador atendido"
+                        : "Informe a TAG/invent��rio da impressora atendida"
+                    }
+                  />
+                </div>
+              )}
             </div>
 
             <div>
@@ -259,7 +391,14 @@ function App() {
                 type="text"
                 required
                 value={summary}
-                onChange={(event) => setSummary(event.target.value)}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setSummary(value);
+                  if (!value) {
+                    clearDependentFields("summary");
+                  }
+                }}
+                disabled={isSummaryDisabled}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 placeholder="Breve resumo do problema..."
               />
@@ -274,6 +413,7 @@ function App() {
                 required
                 value={description}
                 onChange={(event) => setDescription(event.target.value)}
+                disabled={isDescriptionDisabled}
                 className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                 rows="5"
                 placeholder="Detalhe completamente o chamado, incluindo erros, telas e passos reproduzidos..."
