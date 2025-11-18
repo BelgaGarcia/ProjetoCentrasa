@@ -538,8 +538,8 @@ function App() {
                     className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
                     placeholder={
                       category === "desktop"
-                        ? "Informe a TAG/hostname do computador atendido"
-                        : "Informe a TAG/invent��rio da impressora atendida"
+                        ? "Informe a Etiqueta do computador atendido"
+                        : "Informe a Etiqueta da impressora atendida"
                     }
                   />
                 </div>
