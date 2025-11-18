@@ -75,6 +75,11 @@ function App() {
   const [computerId, setComputerId] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [userName, setUserName] = useState("");
+  const [isForRequester, setIsForRequester] = useState("");
+  const [assistedEmail, setAssistedEmail] = useState("");
+  const [assistedComputerId, setAssistedComputerId] = useState("");
+  const [assistedEmployeeId, setAssistedEmployeeId] = useState("");
+  const [assistedUserName, setAssistedUserName] = useState("");
   const [problemType, setProblemType] = useState("");
   const [summary, setSummary] = useState("");
   const [description, setDescription] = useState("");
@@ -97,6 +102,26 @@ function App() {
         clearDependentFields("userName");
         break;
       case "userName":
+        setIsForRequester("");
+        clearDependentFields("recipientType");
+        break;
+      case "recipientType":
+        setAssistedEmail("");
+        clearDependentFields("assistedEmail");
+        break;
+      case "assistedEmail":
+        setAssistedComputerId("");
+        clearDependentFields("assistedComputerId");
+        break;
+      case "assistedComputerId":
+        setAssistedEmployeeId("");
+        clearDependentFields("assistedEmployeeId");
+        break;
+      case "assistedEmployeeId":
+        setAssistedUserName("");
+        clearDependentFields("assistedUserName");
+        break;
+      case "assistedUserName":
         setProblemType("");
         clearDependentFields("problemType");
         break;
@@ -128,7 +153,14 @@ function App() {
   const isComputerIdDisabled = !requesterEmail;
   const isEmployeeIdDisabled = !computerId;
   const isUserNameDisabled = !employeeId;
-  const isProblemTypeDisabled = !userName;
+  const isRecipientTypeDisabled = !userName;
+  const shouldCollectAssistedData = isForRequester === "nao";
+  const isAssistedEmailDisabled = !shouldCollectAssistedData;
+  const isAssistedComputerIdDisabled = !shouldCollectAssistedData || !assistedEmail;
+  const isAssistedEmployeeIdDisabled = !shouldCollectAssistedData || !assistedComputerId;
+  const isAssistedUserNameDisabled = !shouldCollectAssistedData || !assistedEmployeeId;
+  const isProblemTypeDisabled =
+    !userName || !isForRequester || (shouldCollectAssistedData && !assistedUserName);
   const isCategoryDisabled = !problemType;
   const isSubcategoryDisabled = !category;
   const isEquipmentTagDisabled = requiresEquipmentTag ? !subcategory : false;
@@ -142,6 +174,11 @@ function App() {
       computerId,
       employeeId,
       userName,
+      isForRequester,
+      assistedEmail,
+      assistedComputerId,
+      assistedEmployeeId,
+      assistedUserName,
       problemType,
       summary,
       description,
@@ -262,6 +299,133 @@ function App() {
                 />
               </div>
             </div>
+
+            <div>
+              <label htmlFor="recipientType" className="block text-sm font-medium text-gray-700 mb-2">
+                O chamado é para o solicitante? (obrigatorio)
+              </label>
+              <select
+                id="recipientType"
+                required
+                value={isForRequester}
+                onChange={(event) => {
+                  const value = event.target.value;
+                  setIsForRequester(value);
+                  if (value !== isForRequester) {
+                    clearDependentFields("recipientType");
+                  }
+                }}
+                disabled={isRecipientTypeDisabled}
+                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+              >
+                <option value="" disabled>
+                  Selecione uma opcao
+                </option>
+                <option value="sim">Sim</option>
+                <option value="nao">Nao</option>
+              </select>
+            </div>
+
+            {shouldCollectAssistedData && (
+              <div className="grid gap-6 md:grid-cols-2 items-start">
+                <div>
+                  <label htmlFor="assistedEmail" className="block text-sm font-medium text-gray-700 mb-2">
+                    E-mail do solicitado (obrigatorio)
+                  </label>
+                  <input
+                    id="assistedEmail"
+                    type="email"
+                    required={shouldCollectAssistedData}
+                    value={assistedEmail}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setAssistedEmail(value);
+                      if (!value) {
+                        clearDependentFields("assistedEmail");
+                      }
+                    }}
+                    disabled={isAssistedEmailDisabled}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder="pessoa.solicitada@empresa.com"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="assistedComputerId"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Identificacao do computador do solicitado 
+                  </label>
+                  <input
+                    id="assistedComputerId"
+                    type="text"
+                    required={shouldCollectAssistedData}
+                    value={assistedComputerId}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setAssistedComputerId(value);
+                      if (!value) {
+                        clearDependentFields("assistedComputerId");
+                      }
+                    }}
+                    disabled={isAssistedComputerIdDisabled}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder="Ex.: PC-1234"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="assistedEmployeeId"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Matricula do solicitado (obrigatorio)
+                  </label>
+                  <input
+                    id="assistedEmployeeId"
+                    type="text"
+                    required={shouldCollectAssistedData}
+                    value={assistedEmployeeId}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setAssistedEmployeeId(value);
+                      if (!value) {
+                        clearDependentFields("assistedEmployeeId");
+                      }
+                    }}
+                    disabled={isAssistedEmployeeIdDisabled}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder="000000"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="assistedUserName"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Nome completo do solicitado (obrigatorio)
+                  </label>
+                  <input
+                    id="assistedUserName"
+                    type="text"
+                    required={shouldCollectAssistedData}
+                    value={assistedUserName}
+                    onChange={(event) => {
+                      const value = event.target.value;
+                      setAssistedUserName(value);
+                      if (!value) {
+                        clearDependentFields("assistedUserName");
+                      }
+                    }}
+                    disabled={isAssistedUserNameDisabled}
+                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition"
+                    placeholder="Nome e sobrenome"
+                  />
+                </div>
+              </div>
+            )}
 
             <div>
               <label htmlFor="problemType" className="block text-sm font-medium text-gray-700 mb-2">
